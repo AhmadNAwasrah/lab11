@@ -4,6 +4,8 @@ let maxAttempts = 25;
 maxAttempts=parseInt( prompt('Enter number of views'));
 let attemptsEl = document.getElementById('attempts');
 let products = [];
+let goatsClicks = [];
+let goatsViews = [];
 function BusMall(productName) {
     //'cruisin-goat.jpg'.split('.') >>['cruisin-goat','jpg']
     this.productName = productName.split('.')[0];
@@ -85,14 +87,15 @@ function handelClicks(event) {
         renderImg();
     } else{let butn=document.getElementById('showresulte')
     butn.addEventListener('click',viewResulte);
-
-
-}
-    
-        lImgEl.removeEventListener('click', handelClicks);
+lImgEl.removeEventListener('click', handelClicks);
         rImgEl.removeEventListener('click', handelClicks);
+
+}
+    
+        
     
 }
+
 function viewResulte()
 {
     let ulEl = document.getElementById('results');
@@ -101,4 +104,52 @@ function viewResulte()
         liEl = document.createElement('li');
         ulEl.appendChild(liEl);
         liEl.textContent = `${products[i].productName} has ${products[i].views} views and has ${products[i].clicks} clicks.`
-    }}
+       
+       
+     }
+}
+for(let i=0;i<products.length;i++)
+{
+     goatsClicks.push(products[i].clicks);
+    goatsViews.push(products[i].views);
+} 
+
+function chartRender() {
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: productsImage,
+            datasets: [{
+                label: '# of Clicks',
+                data: goatsClicks,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                ],
+                borderWidth: 3
+            }, {
+                label: '# of Views',
+                data: goatsViews,
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                ],
+                borderWidth: 3
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+    chartRender();

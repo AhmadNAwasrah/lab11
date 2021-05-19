@@ -1,10 +1,10 @@
 'use strict';
 let attempts = 0;
 let maxAttempts = 25;
- maxAttempts=parseInt( prompt('Enter number of views'));
+maxAttempts = parseInt(prompt('Enter number of views'));
 let attemptsEl = document.getElementById('attempts');
 let products = [];
-let productsImageNames=[];
+let productsImageNames = [];
 let goatsClicks = [];
 let goatsViews = [];
 let lastShownImages = [];
@@ -20,11 +20,31 @@ function BusMall(productName) {
 
 // let goat1 = new GoatImage('cruisin-goat', 'images/cruisin-goat.jpg');
 // let goat2 = new GoatImage('float-your-goat.jpg', 'images/float-your-goat.jpg');
+function settingItems() {
+    let data = JSON.stringify(products);
+    let dataV = JSON.stringify(attempts);
+    localStorage.setItem('clicks', data)
+    localStorage.setItem('allAttempt', dataV)
+}
+
+function gettingItems() {
+    let stringObj = localStorage.getItem('clicks');
+    let normalObj = JSON.parse(stringObj);
+    let stringObj2 = localStorage.getItem('allAttempt');
+    let normalObj2 = JSON.parse(stringObj2);
+    console.log(normalObj)
+    console.log(normalObj2);
+    if (normalObj !== null) {
+        products = normalObj;
+
+    }
 
 
-let productsImage = ['bag.jpg','banana.jpg','bathroom.jpg','boots.jpg','breakfast.jpg','bubblegum.jpg'
-,'chair.jpg', 'cthulhu.jpg', 'dog-duck.jpg','dragon.jpg','pen.jpg', 'pet-sweep.jpg','scissors.jpg','shark.jpg',
-'sweep.png','tauntaun.jpg','unicorn.jpg','water-can.jpg','wine-glass.jpg'];
+}
+
+let productsImage = ['bag.jpg', 'banana.jpg', 'bathroom.jpg', 'boots.jpg', 'breakfast.jpg', 'bubblegum.jpg'
+    , 'chair.jpg', 'cthulhu.jpg', 'dog-duck.jpg', 'dragon.jpg', 'pen.jpg', 'pet-sweep.jpg', 'scissors.jpg', 'shark.jpg',
+    'sweep.png', 'tauntaun.jpg', 'unicorn.jpg', 'water-can.jpg', 'wine-glass.jpg'];
 
 for (let i = 0; i < productsImage.length; i++) {
     new BusMall(productsImage[i]);
@@ -48,27 +68,26 @@ let midelImgIndex;
 console.log(products);
 function renderImg() {
     leftImgIndex = generateImage();
-    console.log('hefr',leftImgIndex);
+    console.log('hefr', leftImgIndex);
     rightImgIndex = generateImage();
-    midelImgIndex=generateImage();
+    midelImgIndex = generateImage();
     // let arr=[leftImgIndex,midelImgIndex,rightImgIndex];
 
     // for(let i=0;i<arr.length;i++)
     // {if(!(arr[i]===leftImgIndex||arr[i]===rightImgIndex|| arr[i]===midelImgIndex)){
-      
-    while (leftImgIndex === rightImgIndex || leftImgIndex === midelImgIndex || rightImgIndex === midelImgIndex 
-        || lastShownImages.includes(leftImgIndex) || lastShownImages.includes(midelImgIndex) || lastShownImages.includes(rightImgIndex))
-     {
+
+    while (leftImgIndex === rightImgIndex || leftImgIndex === midelImgIndex || rightImgIndex === midelImgIndex
+        || lastShownImages.includes(leftImgIndex) || lastShownImages.includes(midelImgIndex) || lastShownImages.includes(rightImgIndex)) {
         leftImgIndex = generateImage();
-        midelImgIndex=generateImage();
-        rightImgIndex=generateImage();
-       
+        midelImgIndex = generateImage();
+        rightImgIndex = generateImage();
+
 
     }
     lastShownImages[0] = leftImgIndex;
     lastShownImages[1] = midelImgIndex;
     lastShownImages[2] = rightImgIndex;
-     lImgEl.setAttribute('src', products[leftImgIndex].source);
+    lImgEl.setAttribute('src', products[leftImgIndex].source);
     lImgEl.setAttribute('title', products[leftImgIndex].source);
     products[leftImgIndex].views++;
 
@@ -79,7 +98,7 @@ function renderImg() {
     mImgEl.setAttribute('src', products[midelImgIndex].source);
     mImgEl.setAttribute('title', products[midelImgIndex].source);
     products[midelImgIndex].views++;
-} 
+}
 // else{ leftImgIndex = generateImage();
 //     midelImgIndex=generateImage();
 //     rightImgIndex=generateImage();
@@ -90,16 +109,16 @@ function renderImg() {
 
 // }
 renderImg();
-console.log('her',leftImgIndex);
-  
-    // console.log('left', leftImgIndex)
-    // console.log('right', rightImgIndex);
+console.log('her', leftImgIndex);
+
+// console.log('left', leftImgIndex)
+// console.log('right', rightImgIndex);
 
 renderImg();
 
 lImgEl.addEventListener('click', handelClicks);
 rImgEl.addEventListener('click', handelClicks);
-mImgEl.addEventListener('click',handelClicks);
+mImgEl.addEventListener('click', handelClicks);
 function handelClicks(event) {
     attempts++;
     if (attempts <= maxAttempts) {
@@ -108,39 +127,43 @@ function handelClicks(event) {
             products[leftImgIndex].clicks++;
         } else if (event.target.id === 'rightImg') {
             products[rightImgIndex].clicks++;
-        }else if (event.target.id==='midelImg')
-        {products[midelImgIndex].clicks++;}
+        } else if (event.target.id === 'midelImg') { products[midelImgIndex].clicks++; }
         renderImg();
-    } else{let butn=document.getElementById('showresulte')
-    butn.addEventListener('click',viewResulte);
-lImgEl.removeEventListener('click', handelClicks);
+
+    } else {
+        let butn = document.getElementById('showresulte')
+        butn.addEventListener('click', viewResulte);
+        lImgEl.removeEventListener('click', handelClicks);
         rImgEl.removeEventListener('click', handelClicks);
 
-}
+    }
     
-        
-    
+    settingItems();
+
 }
 
-function viewResulte()
-{
+function viewResulte() {
     let ulEl = document.getElementById('results');
     let liEl;
+    ulEl.textContent = '';
     for (let i = 0; i < products.length; i++) {
         liEl = document.createElement('li');
         ulEl.appendChild(liEl);
         liEl.textContent = `${products[i].productName} has ${products[i].views} views and has ${products[i].clicks} clicks.`
         goatsClicks.push(products[i].clicks);
-            goatsViews.push(products[i].views);
-       
-     }
-     let butn=document.getElementById('showresulte');
-     chartRender();
-    butn.disabled=true;
+        goatsViews.push(products[i].views);
+
+    }
+    //  let butn=document.getElementById('showresulte');
+    settingItems();
+    chartRender();
+
+
+    // butn.disabled=true;
 }
 
-console.log('goatsClicks',goatsClicks)
-console.log('goatsViews',goatsViews)
+console.log('goatsClicks', goatsClicks)
+console.log('goatsViews', goatsViews)
 function chartRender() {
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
@@ -179,4 +202,4 @@ function chartRender() {
     });
 }
 
-   
+gettingItems();
